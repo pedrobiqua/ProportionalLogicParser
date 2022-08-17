@@ -1,1 +1,1 @@
-# ProportionalLogicParser
+# Proportional Logic Parser
