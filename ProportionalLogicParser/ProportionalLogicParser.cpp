@@ -5,7 +5,11 @@
 //Funções usadas
 FILE* OpenFile();
 int lengthOfArray(const char* arr);
-void VerifyLatex(const char* result, int j);
+bool VerifyConstant(const char* result, int j);
+bool VerifyProposition(const char* result, int j);
+bool VerifyOpenParentheses(const char* result, int j);
+bool VerifyCloseParentheses(const char* result, int j);
+int VerifyLatex(const char* result, int j);
 const char* checkOperator(const char* result, int j);
 bool VerifyNeg(const char* result, int j);
 bool VerifyWedge(const char* result, int j);
@@ -13,10 +17,12 @@ bool VerifyRightArrow(const char* result, int j);
 bool VerifyLeftRightArrow(const char* result, int j);
 
 int main() {
+    
     // Usando para ler o arquivo.
     FILE* arq;
     char Linha[100];
     char* result;
+    bool running = true;
 
     // Abertura do arquivo
     arq = OpenFile();
@@ -32,17 +38,48 @@ int main() {
         result = fgets(Linha, 100, arq);
         if (result) {
             // Percorre toda a linha
-            for (int j = 0; j < (lengthOfArray(result) - 1); j++) {
-                //Verifica se tem Latex
-                VerifyLatex(result, j);
+            //exemplo de escrita (p^d)
+            while (running)
+            {
+                //Primeiro veificar as folhas
+                //  Constante = "T" | "F"
+                //  Proposicao=[a−z0−9]+
+                //  AbreParen="(" 
+                //  FechaParen = ")"
+                //  OperatorUnario = "¬"
+                //  OperatorBinario = "∨" | "∧" | "→" | "↔"
+                for (int j = 0; j < (lengthOfArray(result)); j++) {
+                    if (VerifyConstant(result, j))
+                    {
+                        std::cout << "Constante: " << result[j] << '\n';
+                    }
+                    else if (VerifyProposition(result, j))
+                    {
+                        std::cout << "Preposicao: " << result[j] << '\n';
+                    }
+                    else if (VerifyOpenParentheses(result, j))
+                    {
+                        std::cout << "Abertura de parenteses: " << result[j] << '\n';
+                    }
+                    else if (VerifyCloseParentheses(result, j))
+                    {
+                        std::cout << "Fecho do parenteses: " << result[j] << '\n';
+                    }
+                    else if (VerifyLatex(result, j) == 3 || VerifyLatex(result, j) == 5 || VerifyLatex(result, j) == 10 || VerifyLatex(result, j) == 14)
+                    {
+                        std::cout << "Latex comeca no barra: " << result[j] << '\n';
+                        j = j + VerifyLatex(result, j);
+                    }
+                    //VerifyLatex(result, j);
+                }
+                running = false;
             }
+            
         }
     }
     fclose(arq);
 
     // Todo working
-    // std::cout << gramatica.Constante[0] << '\n';
-    // std::cout << gramatica.Constante[1] << '\n';
 }
 
 FILE* OpenFile() { return fopen("arq1.txt", "rt"); }
@@ -58,22 +95,54 @@ int lengthOfArray(const char* arr) {
     return size;
 }
 
-void VerifyLatex(const char* result, int j) {
+bool VerifyConstant(const char* result, int j) {
+    return result[j] == 'T' || result[j] == 'F';
+}
+
+bool VerifyProposition(const char* result, int j)
+{
+    return result[j + 1] == ' ' && result[j - 1] == ' ';
+}
+
+bool VerifyOpenParentheses(const char* result, int j)
+{
+    return result[j] == '(';
+}
+
+bool VerifyCloseParentheses(const char* result, int j)
+{
+    return result[j] == ')';
+}
+
+int VerifyLatex(const char* result, int j) {
     if (result[j] == '\\') {
-        std::cout << checkOperator(result, j);
+
+        if (checkOperator(result, j) == "\\neg")
+        {
+            return 3;
+        } 
+        else if (checkOperator(result, j) == "\\wedge")
+        {
+            return 5;
+        }
+        else if (checkOperator(result, j) == "\\rightarrow")
+        {
+            return 10;
+        }
+        else if (checkOperator(result, j) == "\\leftrightarrow")
+        {
+            return 14;
+        }
+        return 0;
     }
+    return 0;
 }
 
 // Verifica os operadores
 const char* checkOperator(const char* result, int j) {
     const char* nameOperator;
-    if (result[j + 1] == 'n' && result[j + 2] == 'e' && result[j + 3] == 'g') {
+    if (VerifyNeg(result, j)) {
         nameOperator = "\\neg";
-        return nameOperator;
-
-    }
-    else if (VerifyNeg(result, j)) {
-        nameOperator = "";
         return nameOperator;
 
     }
@@ -100,7 +169,7 @@ const char* checkOperator(const char* result, int j) {
 
 // Função para verificar a sintaxe do latex
 bool VerifyNeg(const char* result, int j) {
-    return result[j + 1] == 'v' && result[j + 2] == 'e' && result[j + 3] == 'e';
+    return result[j + 1] == 'n' && result[j + 2] == 'e' && result[j + 3] == 'g';
 }
 
 // Função para verificar a sintaxe do latex
