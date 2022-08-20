@@ -17,7 +17,6 @@ bool VerifyRightArrow(const char* result, int j);
 bool VerifyLeftRightArrow(const char* result, int j);
 
 int main() {
-    
     // Usando para ler o arquivo.
     FILE* arq;
     char Linha[100];
@@ -70,11 +69,14 @@ int main() {
                         std::cout << "Latex comeca no barra: " << result[j] << '\n';
                         j = j + VerifyLatex(result, j);
                     }
-                    //VerifyLatex(result, j);
+                    else if (VerifyLatex(result, j) == 0)
+                    {
+                        std::cout << "Sintaxe errada do latex na linha: " << result << '\n';
+                        break;
+                    }
                 }
                 running = false;
             }
-            
         }
     }
     fclose(arq);
@@ -133,7 +135,6 @@ int VerifyLatex(const char* result, int j) {
         {
             return 14;
         }
-        return 0;
     }
     return 0;
 }
@@ -143,28 +144,25 @@ const char* checkOperator(const char* result, int j) {
     const char* nameOperator;
     if (VerifyNeg(result, j)) {
         nameOperator = "\\neg";
-        return nameOperator;
+        return "\\neg";
 
     }
     else if (VerifyWedge(result, j)) {
         nameOperator = "\\wedge";
-        return nameOperator;
+        return "\\wedge";
 
     }
     else if (VerifyRightArrow(result, j)) {
         nameOperator = "\\rightarrow";
-        return nameOperator;
+        return "\\rightarrow";
 
     }
     else if (VerifyLeftRightArrow(result, j)) {
         nameOperator = "\\leftrightarrow";
-        return nameOperator;
+        return "\\leftrightarrow";
 
     }
-    else {
-        std::cout << "Sintaxe errada na linha: " << result << '\n';
-        return 0;
-    }
+    return 0;
 }
 
 // Função para verificar a sintaxe do latex
