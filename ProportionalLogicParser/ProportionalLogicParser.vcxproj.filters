@@ -18,8 +18,16 @@
     <ClCompile Include="ProportionalLogicParser.cpp">
       <Filter>Arquivos de Origem</Filter>
     </ClCompile>
+    <ClCompile Include="ValidateStringParser.cpp">
+      <Filter>Arquivos de Origem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="arq1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ValidateStringParser.h">
+      <Filter>Arquivos de Cabeçalho</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

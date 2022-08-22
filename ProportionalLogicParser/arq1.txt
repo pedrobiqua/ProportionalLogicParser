@@ -1,1 +1,1 @@
-\arrow
+( a \neg b )

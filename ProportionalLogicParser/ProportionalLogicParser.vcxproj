@@ -128,9 +128,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ProportionalLogicParser.cpp" />
+    <ClCompile Include="ValidateStringParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="arq1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ValidateStringParser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

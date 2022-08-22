@@ -2,9 +2,12 @@
 // Enunciado: Ctrl + V here
 
 #include <iostream>
+#include "ValidateStringParser.h"
+
 //Funções usadas
 FILE* OpenFile();
 int lengthOfArray(const char* arr);
+/*
 bool VerifyConstant(const char* result, int j);
 bool VerifyProposition(const char* result, int j);
 bool VerifyOpenParentheses(const char* result, int j);
@@ -15,6 +18,7 @@ bool VerifyNeg(const char* result, int j);
 bool VerifyWedge(const char* result, int j);
 bool VerifyRightArrow(const char* result, int j);
 bool VerifyLeftRightArrow(const char* result, int j);
+*/
 
 int main() {
     // Usando para ler o arquivo.
@@ -22,6 +26,8 @@ int main() {
     char Linha[100];
     char* result;
     bool running = true;
+
+    ValidateStringParser validate;
 
     // Abertura do arquivo
     arq = OpenFile();
@@ -48,28 +54,33 @@ int main() {
                 //  OperatorUnario = "¬"
                 //  OperatorBinario = "∨" | "∧" | "→" | "↔"
                 for (int j = 0; j < (lengthOfArray(result)); j++) {
-                    if (VerifyConstant(result, j))
+                    if (validate.VerifyConstant(result, j))
                     {
                         std::cout << "Constante: " << result[j] << '\n';
                     }
-                    else if (VerifyProposition(result, j))
+                    else if (validate.VerifyProposition(result, j))
                     {
                         std::cout << "Preposicao: " << result[j] << '\n';
                     }
-                    else if (VerifyOpenParentheses(result, j))
+                    else if (validate.VerifyOpenParentheses(result, j))
                     {
                         std::cout << "Abertura de parenteses: " << result[j] << '\n';
                     }
-                    else if (VerifyCloseParentheses(result, j))
+                    else if (validate.VerifyCloseParentheses(result, j))
                     {
                         std::cout << "Fecho do parenteses: " << result[j] << '\n';
                     }
-                    else if (VerifyLatex(result, j) == 3 || VerifyLatex(result, j) == 5 || VerifyLatex(result, j) == 10 || VerifyLatex(result, j) == 14)
+                    else if (validate.VerifySpace(result, j))
+                    {
+                        std::cout << "Espaco" << '\n';
+                    }
+
+                    else if (validate.VerifyLatex(result, j) == 3 || validate.VerifyLatex(result, j) == 5 || validate.VerifyLatex(result, j) == 10 || validate.VerifyLatex(result, j) == 14)
                     {
                         std::cout << "Latex comeca no barra: " << result[j] << '\n';
-                        j = j + VerifyLatex(result, j);
+                        j = j + validate.VerifyLatex(result, j);
                     }
-                    else if (VerifyLatex(result, j) == 0)
+                    else if (validate.VerifyLatex(result, j) == 0)
                     {
                         std::cout << "Sintaxe errada do latex na linha: " << result << '\n';
                         break;
@@ -97,6 +108,7 @@ int lengthOfArray(const char* arr) {
     return size;
 }
 
+/*
 bool VerifyConstant(const char* result, int j) {
     return result[j] == 'T' || result[j] == 'F';
 }
@@ -193,6 +205,7 @@ bool VerifyLeftRightArrow(const char* result, int j) {
         result[j + 12] == 'r' && result[j + 13] == 'o' &&
         result[j + 14] == 'w';
 }
+*/
 
 // Assim consigo pular para a proxima linha como mostra abaixo
 /*
