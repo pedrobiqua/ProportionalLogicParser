@@ -7,6 +7,7 @@
 //Funções usadas
 FILE* OpenFile();
 int lengthOfArray(const char* arr);
+char CreateFormula(const char* result, int j, ValidateStringParser validate);
 /*
 bool VerifyConstant(const char* result, int j);
 bool VerifyProposition(const char* result, int j);
@@ -26,6 +27,12 @@ int main() {
     char Linha[100];
     char* result;
     bool running = true;
+    bool flag = true;
+    char Formula[100] = {};
+    char ResultFormula[100] = {};
+    int conter = 0;
+    int newconter = 0;
+    int u = 0;
 
     ValidateStringParser validate;
 
@@ -43,54 +50,87 @@ int main() {
         result = fgets(Linha, 100, arq);
         if (result) {
             // Percorre toda a linha
-            //exemplo de escrita (p^d)
-            while (running)
-            {
-                //Primeiro veificar as folhas
-                //  Constante = "T" | "F"
-                //  Proposicao=[a−z0−9]+
-                //  AbreParen="(" 
-                //  FechaParen = ")"
-                //  OperatorUnario = "¬"
-                //  OperatorBinario = "∨" | "∧" | "→" | "↔"
+            while (running) {
+                // Em casa mudar a ordem e criar uma função
                 for (int j = 0; j < (lengthOfArray(result)); j++) {
-                    if (validate.VerifyConstant(result, j))
+                    if (CreateFormula(result, j, validate) != 0)
                     {
-                        std::cout << "Constante: " << result[j] << '\n';
+                        Formula[conter] = CreateFormula(result, j, validate);
+                        conter++;
                     }
-                    else if (validate.VerifyProposition(result, j))
-                    {
-                        std::cout << "Preposicao: " << result[j] << '\n';
-                    }
-                    else if (validate.VerifyOpenParentheses(result, j))
-                    {
-                        std::cout << "Abertura de parenteses: " << result[j] << '\n';
-                    }
-                    else if (validate.VerifyCloseParentheses(result, j))
-                    {
-                        std::cout << "Fecho do parenteses: " << result[j] << '\n';
-                    }
-                    else if (validate.VerifySpace(result, j))
-                    {
-                        std::cout << "Espaco" << '\n';
-                    }
+                }
 
-                    else if (validate.VerifyLatex(result, j) == 3 || validate.VerifyLatex(result, j) == 5 || validate.VerifyLatex(result, j) == 10 || validate.VerifyLatex(result, j) == 14)
-                    {
-                        std::cout << "Latex comeca no barra: " << result[j] << '\n';
-                        j = j + validate.VerifyLatex(result, j);
+                //Criar uma função para isso
+                // Transformar C e P em R pois são formula
+                for (int k = 0; k < sizeof(Formula); k++) {
+                    if (Formula[k] == 'C' || Formula[k] == 'P') {
+                        Formula[k] = 'R';
                     }
-                    else if (validate.VerifyLatex(result, j) == 0)
-                    {
-                        std::cout << "Sintaxe errada do latex na linha: " << result << '\n';
-                        break;
+                }
+
+                //Criar uma função para isso
+                // Ver se existe Formula Unaria
+                for (int o = 0; o < sizeof(Formula); o++) {
+                    if (Formula[o] == 'A' && Formula[o + 1] == 'U' &&
+                        Formula[o + 2] == 'R' && Formula[o + 3] == 'F') {
+                        Formula[o] = 'R';
+                        Formula[o + 1] = 'R';
+                        Formula[o + 2] = 'R';
+                        Formula[o + 3] = 'R';
+                    }
+                }
+
+                //Criar uma função para isso
+                // Organiza o array
+                for (int k = 0; k < sizeof(Formula); k++) {
+                    if (Formula[k] == 'R' && Formula[k + 1] != 'R') {
+                        ResultFormula[newconter] = 'R';
+                        newconter++;
+
+                    }
+                    else if (Formula[k] != 'R' && Formula[k + 1] == 'R') {
+                        ResultFormula[newconter] = Formula[k];
+                        newconter++;
+
+                    }
+                    else if (Formula[k] != 'R' && Formula[k + 1] != 'R') {
+                        ResultFormula[newconter] = Formula[k];
+                        newconter++;
+                    }
+                }
+
+                //Criar uma função para isso
+                // Ver se existe Formula Binaria
+                for (int p = 0; p < sizeof(ResultFormula); p++) {
+                    if (ResultFormula[p] == 'A' && ResultFormula[p + 1] == 'R' && ResultFormula[p + 2] == 'B' && ResultFormula[p + 3] == 'R' && ResultFormula[p + 4] == 'F') {
+                        ResultFormula[p] = 'R';
+                        ResultFormula[p + 1] = 'R';
+                        ResultFormula[p + 2] = 'R';
+                        ResultFormula[p + 3] = 'R';
+                        ResultFormula[p + 4] = 'R';
+                    }
+                }
+
+                ////Criar uma função para isso.
+                for (int r = 0; r < sizeof(ResultFormula); r++) {
+                    if (ResultFormula[r] != 'R' && ResultFormula[r] != 0) {
+                        flag = false;
                     }
                 }
                 running = false;
             }
         }
+        std::cout << result << '\n';
     }
     fclose(arq);
+
+    if (flag) {
+        std::cout << "Sintaxe correta" << '\n';
+    }
+    else {
+        std::cout << "Sintaxe errada" << '\n';
+    }
+    
 
     // Todo working
 }
@@ -106,6 +146,55 @@ int lengthOfArray(const char* arr) {
     }
 
     return size;
+}
+
+char CreateFormula(const char* result, int j, ValidateStringParser validate)
+{
+    char Formula;
+    Formula = 0;
+    if (validate.VerifyConstant(result, j)) {
+        // std::cout << "Constante: " << result[j] << '\n';
+        Formula = 'C';
+
+    }
+    else if (validate.VerifyProposition(result, j)) {
+        // std::cout << "Preposicao: " << result[j] << '\n';
+        Formula = 'P';
+
+    }
+    else if (validate.VerifyOpenParentheses(result, j)) {
+        // std::cout << "Abertura de parenteses: " << result[j] << '\n';
+        Formula = 'A';
+
+    }
+    else if (validate.VerifyCloseParentheses(result, j)) {
+        // std::cout << "Fecho do parenteses: " << result[j] << '\n';
+        Formula = 'F';
+
+    }
+    else if (validate.VerifySpace(result, j)) {
+        // std::cout << "Espaco" << '\n';
+
+    }
+    else if (validate.VerifyLatex(result, j) == 3 || validate.VerifyLatex(result, j) == 5 || validate.VerifyLatex(result, j) == 10 || validate.VerifyLatex(result, j) == 14) {
+        // std::cout << "Latex comeca no barra: ";
+        for (int l = 0; l <= validate.VerifyLatex(result, j); l++) {
+            //std::cout << result[j + l];
+        }
+        if (validate.VerifyLatex(result, j) != 3) {
+            Formula = 'B';
+
+        }
+        else {
+            Formula = 'U';
+
+        }
+        j = j + validate.VerifyLatex(result, j) + 1;
+        //std::cout << '\n';
+
+    }
+
+    return Formula;
 }
 
 /*
