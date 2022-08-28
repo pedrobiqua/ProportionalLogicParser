@@ -1,9 +1,11 @@
 #include "ValidateStringParser.h"
 
+//Funções para verificar as folhas
 bool ValidateStringParser::VerifyConstant(const char* result, int j) {
     return result[j] == 'T' || result[j] == 'F';
 }
 
+//Arrumar as preposições
 bool ValidateStringParser::VerifyProposition(const char* result, int j)
 {
     return result[j + 1] == ' ' && result[j - 1] == ' ';
