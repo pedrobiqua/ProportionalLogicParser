@@ -9,6 +9,8 @@ FILE* OpenFile();
 int lengthOfArray(const char* arr);
 char CreateFormula(const char* result, int j, ValidateStringParser validate);
 void RemovePrepositionByFormula(char* Formula, int sizeFormula);
+void RemoveUnaryFormulaByFormula(char* Formula, int sizeFormula);
+void RemoveBinaryFormulaByFormula(char* Formula, int sizeFormula);
 void OrganizeFormula(char* Formula, int sizeFormula);
 bool CheckIfItIsFormula(char* Formula, int sizeFormula);
 void PrintResultFormula(bool flag);
@@ -69,6 +71,8 @@ int main() {
                 
                 //Criar uma função para isso
                 // Ver se existe Formula Unaria
+                RemoveUnaryFormulaByFormula(Formula, sizeof(Formula));
+                /*
                 for (int o = 0; o < sizeof(Formula); o++) {
                     if (Formula[o] == 'A' && Formula[o + 1] == 'U' && Formula[o + 2] == 'E' && Formula[o + 3] == 'R' && Formula[o + 4] == 'E' && Formula[o + 5] == 'F') {
                         Formula[o] = 'R';
@@ -80,6 +84,8 @@ int main() {
 
                     }
                 }
+                */
+                
 
                 //Criar uma função para isso
                 // Organiza o array
@@ -87,6 +93,8 @@ int main() {
 
                 //Criar uma função para isso
                 // Ver se existe Formula Binaria
+                RemoveBinaryFormulaByFormula(Formula, sizeof(Formula));
+                /*
                 for (int p = 0; p < sizeof(Formula); p++) {
                     if (Formula[p] == 'A' && Formula[p + 1] == 'B' && Formula[p + 2] == 'E' && Formula[p + 3] == 'R' && Formula[p + 4] == 'E'
                         && Formula[p + 5] == 'R' && Formula[p + 6] == 'E' && Formula[p + 7] == 'F') {
@@ -101,7 +109,8 @@ int main() {
                         Formula[p + 7] = 'R';
                     }
                 }
-
+                */
+                
                 if (CheckIfItIsFormula(Formula, sizeof(Formula)))
                 {
                     flag = true;
@@ -189,6 +198,40 @@ void RemovePrepositionByFormula(char* Formula, int sizeFormula)
     }
 }
 
+void RemoveUnaryFormulaByFormula(char *Formula, int sizeFormula) 
+{
+
+    for (int o = 0; o < sizeFormula; o++) {
+        if (Formula[o] == 'A' && Formula[o + 1] == 'U' && Formula[o + 2] == 'E' && Formula[o + 3] == 'R' && Formula[o + 4] == 'E' && Formula[o + 5] == 'F') {
+            Formula[o] = 'R';
+            Formula[o + 1] = 'R';
+            Formula[o + 2] = 'R';
+            Formula[o + 3] = 'R';
+            Formula[o + 4] = 'R';
+            Formula[o + 5] = 'R';
+
+        }
+    }
+}
+
+void RemoveBinaryFormulaByFormula(char *Formula, int sizeFormula)
+{
+    for (int p = 0; p < sizeof(Formula); p++) {
+        if (Formula[p] == 'A' && Formula[p + 1] == 'B' && Formula[p + 2] == 'E' && Formula[p + 3] == 'R' && Formula[p + 4] == 'E'
+            && Formula[p + 5] == 'R' && Formula[p + 6] == 'E' && Formula[p + 7] == 'F') {
+
+            Formula[p] = 'R';
+            Formula[p + 1] = 'R';
+            Formula[p + 2] = 'R';
+            Formula[p + 3] = 'R';
+            Formula[p + 4] = 'R';
+            Formula[p + 5] = 'R';
+            Formula[p + 6] = 'R';
+            Formula[p + 7] = 'R';
+        }
+    }
+}
+
 void OrganizeFormula(char* Formula, int sizeFormula) 
 {
     sizeFormula = 20;
@@ -231,6 +274,7 @@ void OrganizeFormula(char* Formula, int sizeFormula)
     }
     */
 
+    //Copia a nova formula para a string.
     memcpy(Formula, ResultFormula, sizeof ResultFormula);
 
 }
