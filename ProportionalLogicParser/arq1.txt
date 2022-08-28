@@ -1,1 +1,1 @@
-( a \wedge b )
+(\wedge a (\neg b ) )

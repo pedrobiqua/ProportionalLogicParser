@@ -1,5 +1,5 @@
 // Pedro Bianchini de Quadros
-// Enunciado: Ctrl + V here
+// Enunciado: Ctrl C + V
 
 #include <iostream>
 #include "ValidateStringParser.h"
@@ -8,6 +8,10 @@
 FILE* OpenFile();
 int lengthOfArray(const char* arr);
 char CreateFormula(const char* result, int j, ValidateStringParser validate);
+void RemovePrepositionByFormula(char* Formula, int sizeFormula);
+void OrganizeFormula(char* Formula, int sizeFormula);
+bool CheckIfItIsFormula(char* Formula, int sizeFormula);
+void PrintResultFormula(bool flag);
 /*
 bool VerifyConstant(const char* result, int j);
 bool VerifyProposition(const char* result, int j);
@@ -60,79 +64,57 @@ int main() {
                     }
                 }
 
-                //Criar uma função para isso
                 // Transformar C e P em R pois são formula
-                for (int k = 0; k < sizeof(Formula); k++) {
-                    if (Formula[k] == 'C' || Formula[k] == 'P') {
-                        Formula[k] = 'R';
-                    }
-                }
-
+                RemovePrepositionByFormula(Formula, sizeof(Formula));
+                
                 //Criar uma função para isso
                 // Ver se existe Formula Unaria
                 for (int o = 0; o < sizeof(Formula); o++) {
-                    if (Formula[o] == 'A' && Formula[o + 1] == 'U' &&
-                        Formula[o + 2] == 'R' && Formula[o + 3] == 'F') {
+                    if (Formula[o] == 'A' && Formula[o + 1] == 'U' && Formula[o + 2] == 'E' && Formula[o + 3] == 'R' && Formula[o + 4] == 'E' && Formula[o + 5] == 'F') {
                         Formula[o] = 'R';
                         Formula[o + 1] = 'R';
                         Formula[o + 2] = 'R';
                         Formula[o + 3] = 'R';
+                        Formula[o + 4] = 'R';
+                        Formula[o + 5] = 'R';
+
                     }
                 }
 
                 //Criar uma função para isso
                 // Organiza o array
-                for (int k = 0; k < sizeof(Formula); k++) {
-                    if (Formula[k] == 'R' && Formula[k + 1] != 'R') {
-                        ResultFormula[newconter] = 'R';
-                        newconter++;
-
-                    }
-                    else if (Formula[k] != 'R' && Formula[k + 1] == 'R') {
-                        ResultFormula[newconter] = Formula[k];
-                        newconter++;
-
-                    }
-                    else if (Formula[k] != 'R' && Formula[k + 1] != 'R') {
-                        ResultFormula[newconter] = Formula[k];
-                        newconter++;
-                    }
-                }
+                OrganizeFormula(Formula, sizeof(Formula));
 
                 //Criar uma função para isso
                 // Ver se existe Formula Binaria
-                for (int p = 0; p < sizeof(ResultFormula); p++) {
-                    if (ResultFormula[p] == 'A' && ResultFormula[p + 1] == 'R' && ResultFormula[p + 2] == 'B' && ResultFormula[p + 3] == 'R' && ResultFormula[p + 4] == 'F') {
-                        ResultFormula[p] = 'R';
-                        ResultFormula[p + 1] = 'R';
-                        ResultFormula[p + 2] = 'R';
-                        ResultFormula[p + 3] = 'R';
-                        ResultFormula[p + 4] = 'R';
+                for (int p = 0; p < sizeof(Formula); p++) {
+                    if (Formula[p] == 'A' && Formula[p + 1] == 'B' && Formula[p + 2] == 'E' && Formula[p + 3] == 'R' && Formula[p + 4] == 'E'
+                        && Formula[p + 5] == 'R' && Formula[p + 6] == 'E' && Formula[p + 7] == 'F') {
+
+                        Formula[p] = 'R';
+                        Formula[p + 1] = 'R';
+                        Formula[p + 2] = 'R';
+                        Formula[p + 3] = 'R';
+                        Formula[p + 4] = 'R';
+                        Formula[p + 5] = 'R';
+                        Formula[p + 6] = 'R';
+                        Formula[p + 7] = 'R';
                     }
                 }
 
-                ////Criar uma função para isso.
-                for (int r = 0; r < sizeof(ResultFormula); r++) {
-                    if (ResultFormula[r] != 'R' && ResultFormula[r] != 0) {
-                        flag = false;
-                    }
+                if (CheckIfItIsFormula(Formula, sizeof(Formula)))
+                {
+                    flag = true;
                 }
+                
                 running = false;
             }
         }
         std::cout << result << '\n';
     }
     fclose(arq);
-
-    if (flag) {
-        std::cout << "Sintaxe correta" << '\n';
-    }
-    else {
-        std::cout << "Sintaxe errada" << '\n';
-    }
+    PrintResultFormula(flag);
     
-
-    // Todo working
 }
 
 FILE* OpenFile() { return fopen("arq1.txt", "rt"); }
@@ -157,11 +139,6 @@ char CreateFormula(const char* result, int j, ValidateStringParser validate)
         Formula = 'C';
 
     }
-    else if (validate.VerifyProposition(result, j)) {
-        // std::cout << "Preposicao: " << result[j] << '\n';
-        Formula = 'P';
-
-    }
     else if (validate.VerifyOpenParentheses(result, j)) {
         // std::cout << "Abertura de parenteses: " << result[j] << '\n';
         Formula = 'A';
@@ -172,8 +149,14 @@ char CreateFormula(const char* result, int j, ValidateStringParser validate)
         Formula = 'F';
 
     }
+    else if (validate.VerifyProposition(result, j)) {
+        // std::cout << "Preposicao: " << result[j] << '\n';
+        Formula = 'P';
+
+    }
     else if (validate.VerifySpace(result, j)) {
         // std::cout << "Espaco" << '\n';
+        Formula = 'E';
 
     }
     else if (validate.VerifyLatex(result, j) == 3 || validate.VerifyLatex(result, j) == 5 || validate.VerifyLatex(result, j) == 10 || validate.VerifyLatex(result, j) == 14) {
@@ -195,6 +178,81 @@ char CreateFormula(const char* result, int j, ValidateStringParser validate)
     }
 
     return Formula;
+}
+
+void RemovePrepositionByFormula(char* Formula, int sizeFormula)
+{
+    for (int k = 0; k < sizeFormula; k++) {
+        if (Formula[k] == 'C' || Formula[k] == 'P') {
+            Formula[k] = 'R';
+        }
+    }
+}
+
+void OrganizeFormula(char* Formula, int sizeFormula) 
+{
+    sizeFormula = 20;
+    char ResultFormula[100] = {};
+    int conter;
+    conter = 0;
+
+    for (int k = 0; k < sizeFormula; k++) {
+        if (Formula[k] == 'R' && Formula[k + 1] != 'R') {
+            ResultFormula[conter] = 'R';
+            conter++;
+
+        }
+        else if (Formula[k] != 'R' && Formula[k + 1] == 'R') {
+            ResultFormula[conter] = Formula[k];
+            conter++;
+
+        }
+        else if (Formula[k] != 'R' && Formula[k + 1] != 'R') {
+            ResultFormula[conter] = Formula[k];
+            conter++;
+        }
+    }
+    /* Como era antes no main
+    for (int k = 0; k < sizeof(Formula); k++) {
+        if (Formula[k] == 'R' && Formula[k + 1] != 'R') {
+            ResultFormula[newconter] = 'R';
+            newconter++;
+
+        }
+        else if (Formula[k] != 'R' && Formula[k + 1] == 'R') {
+            ResultFormula[newconter] = Formula[k];
+            newconter++;
+
+        }
+        else if (Formula[k] != 'R' && Formula[k + 1] != 'R') {
+            ResultFormula[newconter] = Formula[k];
+            newconter++;
+        }
+    }
+    */
+
+    memcpy(Formula, ResultFormula, sizeof ResultFormula);
+
+}
+
+bool CheckIfItIsFormula(char* Formula, int sizeFormula)
+{
+    for (int r = 0; r < sizeFormula; r++) {
+        if (Formula[r] != 'R' && Formula[r] != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void PrintResultFormula(bool flag)
+{
+    if (flag) {
+        std::cout << "Sintaxe correta" << '\n';
+    }
+    else {
+        std::cout << "Sintaxe errada" << '\n';
+    }
 }
 
 /*
