@@ -13,6 +13,9 @@ void RemovePrepositionByFormula(char* Formula, int sizeFormula);
 void RemoveUnaryFormulaByFormula(char* Formula, int sizeFormula);
 void RemoveBinaryFormulaByFormula(char* Formula, int sizeFormula);
 void OrganizeFormula(char* Formula, int sizeFormula);
+bool isUnaryFormula(const char* Formula, int j);
+bool isBinaryFormula(const char* Formula, int p);
+bool isResult(const char* Formula, int sizeFormula);
 bool CheckIfItIsFormula(char* Formula, int sizeFormula);
 void PrintResultFormula(bool flag);
 void printStringWithoutBreak(const char* arr);
@@ -43,16 +46,16 @@ int main() {
         // Obtêm a linha
         result = fgets(Linha, 100, arq);
         if (result) {
+            // Em casa mudar a ordem e criar uma função
+            for (int j = 0; j < (lengthOfArray(result)); j++) {
+                if (CreateFormula(result, j) != 0)
+                {
+                    Formula[conter] = CreateFormula(result, j);
+                    conter++;
+                }
+            }
             // Percorre toda a linha
             while (running) {
-                // Em casa mudar a ordem e criar uma função
-                for (int j = 0; j < (lengthOfArray(result)); j++) {
-                    if (CreateFormula(result, j) != 0)
-                    {
-                        Formula[conter] = CreateFormula(result, j);
-                        conter++;
-                    }
-                }
 
                 // Transformar C e P em R pois são formula
                 RemovePrepositionByFormula(Formula, sizeof(Formula));
@@ -66,9 +69,27 @@ int main() {
                 if (CheckIfItIsFormula(Formula, sizeof(Formula)))
                 {
                     flag = true;
+                    running = false;
+                }
+                else
+                {
+                    /*
+                    for (int i = 0; i < sizeof(Formula); i++)
+                    {
+                        if (Formula[i] == 'A')
+                        {
+                            if (!isBinaryFormula(Formula, i) && !isUnaryFormula(Formula, i))
+                            {
+                                running = false;
+                            }
+                        }
+                    }
+                    */
+                    running = isResult(Formula, sizeof(Formula));
+                    
+
                 }
                 
-                running = false;
             }
         }
         printStringWithoutBreak(result);
@@ -123,7 +144,19 @@ char CreateFormula(const char* result, int j)
 
     return Formula;
 }
-
+/*
+            Gabarito das Letras:
+            _____________________________
+            |    A = Abre parênteses    |
+            |    F = Fecha parênteses   |
+            |    E = Espaço             |
+            |    P = Preposição         |
+            |    C = Constante          |
+            |    U = Unário             |
+            |    B = Binário            |
+            |    R = Resultado          |
+            _____________________________
+*/
 void RemovePrepositionByFormula(char* Formula, int sizeFormula)
 {
     for (int k = 0; k < sizeFormula; k++) {
@@ -197,6 +230,33 @@ void OrganizeFormula(char* Formula, int sizeFormula)
     //Copia a nova formula;
     memcpy(Formula, ResultFormula, sizeof ResultFormula);
 
+}
+
+bool isUnaryFormula(const char* Formula, int j) 
+{
+    return Formula[j] == 'A' && Formula[j + 1] == 'U' && Formula[j + 2] == 'E' && Formula[j + 3] == 'R' && Formula[j + 4] == 'E' && Formula[j + 5] == 'F';
+}
+
+bool isBinaryFormula(const char* Formula, int p)
+{
+    return Formula[p] == 'A' && Formula[p + 1] == 'B' && Formula[p + 2] == 'E' && Formula[p + 3] == 'R' && Formula[p + 4] == 'E' 
+    && Formula[p + 5] == 'R' && Formula[p + 6] == 'E' && Formula[p + 7] == 'F';
+}
+
+bool isResult(const char* Formula, int sizeFormula)
+{
+    for (int i = 0; i < sizeof(Formula); i++)
+    {
+        if (Formula[i] == 'A')
+        {
+            if (!isBinaryFormula(Formula, i) && !isUnaryFormula(Formula, i))
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 bool CheckIfItIsFormula(char* Formula, int sizeFormula)
