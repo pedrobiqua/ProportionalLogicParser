@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FormulaAnalyzer.cpp" />
     <ClCompile Include="ProportionalLogicParser.cpp" />
     <ClCompile Include="ValidateStringParser.cpp" />
   </ItemGroup>
@@ -134,6 +135,7 @@
     <Text Include="arq1.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FormulaAnalyzer.h" />
     <ClInclude Include="ValidateStringParser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
