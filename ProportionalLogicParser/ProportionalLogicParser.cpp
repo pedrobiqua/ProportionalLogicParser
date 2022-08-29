@@ -8,6 +8,7 @@
 FILE* OpenFile();
 int lengthOfArray(const char* arr);
 // Funções para analisar os galhos da arvore;
+void RunsProportionalLogicParser(char* result, char* Formula, int sizeFormula);
 void CreateFormula(char* result, char* Formula);
 char TransformLeavesInGrammar(const char* result, int j);
 void AnalyzeExpressionSyntax(char* Formula, int sizeFormula, bool* flag);
@@ -27,14 +28,9 @@ int main() {
 	FILE* arq;
 	char Linha[100];
 	char* result;
-
-	bool running = true;
 	bool flag = false;
-
 	//Será nessa variavel que será manipulado a formula
 	char Formula[100] = {};
-	int conter = 0;
-
 	// Abertura do arquivo
 	arq = OpenFile();
 
@@ -47,12 +43,7 @@ int main() {
 	while (!feof(arq))
 	{
 		result = fgets(Linha, 100, arq);
-		if (result) {
-			CreateFormula(result, Formula);
-			AnalyzeExpressionSyntax(Formula, sizeof(Formula), &flag);
-		}
-		printStringWithoutBreak(result);
-		PrintResultFormula(flag);
+		RunsProportionalLogicParser(result, Formula, sizeof(Formula));
 	}
 	fclose(arq);
 
@@ -70,6 +61,17 @@ int lengthOfArray(const char* arr)
 	}
 
 	return size;
+}
+
+void RunsProportionalLogicParser(char* result, char* Formula, int sizeFormula) 
+{
+	bool flag = false;
+	if (result) {
+		CreateFormula(result, Formula);
+		AnalyzeExpressionSyntax(Formula, sizeFormula, &flag);
+	}
+	printStringWithoutBreak(result);
+	PrintResultFormula(flag);
 }
 
 void CreateFormula(char* result, char* Formula)
