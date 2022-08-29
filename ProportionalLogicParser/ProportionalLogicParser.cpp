@@ -8,7 +8,9 @@
 FILE* OpenFile();
 int lengthOfArray(const char* arr);
 // Funções para analisar os galhos da arvore;
-char CreateFormula(const char* result, int j);
+void CreateFormula(char* result, char* Formula);
+char TransformLeavesInGrammar(const char* result, int j);
+void AnalyzeExpressionSyntax(char* Formula, int sizeFormula, bool *flag);
 void RemovePrepositionByFormula(char* Formula, int sizeFormula);
 void RemoveUnaryFormulaByFormula(char* Formula, int sizeFormula);
 void RemoveBinaryFormulaByFormula(char* Formula, int sizeFormula);
@@ -36,72 +38,30 @@ int main() {
     // Abertura do arquivo
     arq = OpenFile();
 
-    if (arq == NULL) {
+    if (arq == NULL) 
+    {
         std::cout << "Problemas na abertura do arquivo" << '\n';
         return 0;
     }
 
-    // Percorre todo o arquivo
-    while (!feof(arq)) {
-        // Obtêm a linha
+    while (!feof(arq))
+    {
         result = fgets(Linha, 100, arq);
         if (result) {
-            // Em casa mudar a ordem e criar uma função
-            for (int j = 0; j < (lengthOfArray(result)); j++) {
-                if (CreateFormula(result, j) != 0)
-                {
-                    Formula[conter] = CreateFormula(result, j);
-                    conter++;
-                }
-            }
-            // Percorre toda a linha
-            while (running) {
-
-                // Transformar C e P em R pois são formula
-                RemovePrepositionByFormula(Formula, sizeof(Formula));
-                
-                // Ver se existe Formula Unaria
-                RemoveUnaryFormulaByFormula(Formula, sizeof(Formula));
-
-                // Ver se existe Formula Binaria
-                RemoveBinaryFormulaByFormula(Formula, sizeof(Formula));
-                
-                if (CheckIfItIsFormula(Formula, sizeof(Formula)))
-                {
-                    flag = true;
-                    running = false;
-                }
-                else
-                {
-                    /*
-                    for (int i = 0; i < sizeof(Formula); i++)
-                    {
-                        if (Formula[i] == 'A')
-                        {
-                            if (!isBinaryFormula(Formula, i) && !isUnaryFormula(Formula, i))
-                            {
-                                running = false;
-                            }
-                        }
-                    }
-                    */
-                    running = isResult(Formula, sizeof(Formula));
-                    
-
-                }
-                
-            }
+            CreateFormula(result, Formula);
+            AnalyzeExpressionSyntax(Formula, sizeof(Formula), &flag);
         }
         printStringWithoutBreak(result);
         PrintResultFormula(flag);
     }
     fclose(arq);
-    
+
 }
 
 FILE* OpenFile() { return fopen("arq1.txt", "rt"); }
 
-int lengthOfArray(const char* arr) {
+int lengthOfArray(const char* arr) 
+{
     int size = 0;
 
     while (*arr) {
@@ -112,7 +72,19 @@ int lengthOfArray(const char* arr) {
     return size;
 }
 
-char CreateFormula(const char* result, int j)
+void CreateFormula(char *result, char *Formula) 
+{
+    int conter = 0;
+    for (int j = 0; j < (lengthOfArray(result)); j++) {
+        if (TransformLeavesInGrammar(result, j) != 0)
+        {
+            Formula[conter] = TransformLeavesInGrammar(result, j);
+            conter++;
+        }
+    }
+}
+
+char TransformLeavesInGrammar(const char* result, int j)
 {
     char Formula;
     Formula = 0;
@@ -144,6 +116,33 @@ char CreateFormula(const char* result, int j)
 
     return Formula;
 }
+
+void AnalyzeExpressionSyntax(char * Formula, int sizeFormula, bool *flag)
+{
+    bool running = true;
+    while (running) {
+
+        // Transformar C e P em R pois são formula
+        RemovePrepositionByFormula(Formula, sizeFormula);
+
+        // Ver se existe Formula Unaria
+        RemoveUnaryFormulaByFormula(Formula, sizeFormula);
+
+        // Ver se existe Formula Binaria
+        RemoveBinaryFormulaByFormula(Formula, sizeFormula);
+
+        if (CheckIfItIsFormula(Formula, sizeFormula))
+        {
+            *flag = true;
+            running = false;
+        }
+        else
+        {
+            running = isResult(Formula, sizeof(Formula));
+        }
+
+    }
+}
 /*
             Gabarito das Letras:
             _____________________________
@@ -166,7 +165,7 @@ void RemovePrepositionByFormula(char* Formula, int sizeFormula)
     }
 }
 
-void RemoveUnaryFormulaByFormula(char *Formula, int sizeFormula) 
+void RemoveUnaryFormulaByFormula(char* Formula, int sizeFormula)
 {
     for (int o = 0; o < sizeFormula; o++) {
         if (Formula[o] == 'A' && Formula[o + 1] == 'U' && Formula[o + 2] == 'E' && Formula[o + 3] == 'R' && Formula[o + 4] == 'E' && Formula[o + 5] == 'F') {
@@ -183,7 +182,7 @@ void RemoveUnaryFormulaByFormula(char *Formula, int sizeFormula)
     OrganizeFormula(Formula, sizeof(Formula));
 }
 
-void RemoveBinaryFormulaByFormula(char *Formula, int sizeFormula)
+void RemoveBinaryFormulaByFormula(char* Formula, int sizeFormula)
 {
     for (int p = 0; p < sizeof(Formula); p++) {
         if (Formula[p] == 'A' && Formula[p + 1] == 'B' && Formula[p + 2] == 'E' && Formula[p + 3] == 'R' && Formula[p + 4] == 'E'
@@ -203,44 +202,44 @@ void RemoveBinaryFormulaByFormula(char *Formula, int sizeFormula)
     OrganizeFormula(Formula, sizeof(Formula));
 }
 
-void OrganizeFormula(char* Formula, int sizeFormula) 
+void OrganizeFormula(char* Formula, int sizeFormula)
 {
     sizeFormula = 20;
-    char ResultFormula[100] = {};
+    char tempFormula[100] = {};
     int conter;
     conter = 0;
 
     for (int k = 0; k < sizeFormula; k++) {
         if (Formula[k] == 'R' && Formula[k + 1] != 'R') {
-            ResultFormula[conter] = 'R';
+            tempFormula[conter] = 'R';
             conter++;
 
         }
         else if (Formula[k] != 'R' && Formula[k + 1] == 'R') {
-            ResultFormula[conter] = Formula[k];
+            tempFormula[conter] = Formula[k];
             conter++;
 
         }
         else if (Formula[k] != 'R' && Formula[k + 1] != 'R') {
-            ResultFormula[conter] = Formula[k];
+            tempFormula[conter] = Formula[k];
             conter++;
         }
     }
 
     //Copia a nova formula;
-    memcpy(Formula, ResultFormula, sizeof ResultFormula);
+    memcpy(Formula, tempFormula, sizeof tempFormula);
 
 }
 
-bool isUnaryFormula(const char* Formula, int j) 
+bool isUnaryFormula(const char* Formula, int j)
 {
     return Formula[j] == 'A' && Formula[j + 1] == 'U' && Formula[j + 2] == 'E' && Formula[j + 3] == 'R' && Formula[j + 4] == 'E' && Formula[j + 5] == 'F';
 }
 
 bool isBinaryFormula(const char* Formula, int p)
 {
-    return Formula[p] == 'A' && Formula[p + 1] == 'B' && Formula[p + 2] == 'E' && Formula[p + 3] == 'R' && Formula[p + 4] == 'E' 
-    && Formula[p + 5] == 'R' && Formula[p + 6] == 'E' && Formula[p + 7] == 'F';
+    return Formula[p] == 'A' && Formula[p + 1] == 'B' && Formula[p + 2] == 'E' && Formula[p + 3] == 'R' && Formula[p + 4] == 'E'
+        && Formula[p + 5] == 'R' && Formula[p + 6] == 'E' && Formula[p + 7] == 'F';
 }
 
 bool isResult(const char* Formula, int sizeFormula)
