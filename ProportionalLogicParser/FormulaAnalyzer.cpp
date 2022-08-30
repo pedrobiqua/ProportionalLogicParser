@@ -1,5 +1,7 @@
-#include "FormulaAnalyzer.h"
 #include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include "FormulaAnalyzer.h"
 #include "ValidateStringParser.h"
 
 void FormulaAnalyzer:: RunsProportionalLogicParser(char* result, char* Formula, int sizeFormula)
