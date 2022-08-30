@@ -8,7 +8,10 @@ bool ValidateStringParser::VerifyConstant(const char* result, int j) {
 //Arrumar as preposições
 bool ValidateStringParser::VerifyProposition(const char* result, int j)
 {
-    return result[j + 1] == ' ' && result[j - 1] == ' ';
+    //return result[j + 1] == ' ' && result[j - 1] ;
+    
+    return result[j] != '\\' && result[j] != 0 && result[j] != '\n';
+    
 }
 
 bool ValidateStringParser::VerifyOpenParentheses(const char* result, int j)
@@ -32,6 +35,10 @@ int ValidateStringParser::VerifyLatex(const char* result, int j) {
         if (checkOperator(result, j) == "\\neg")
         {
             return 3;
+        }
+        if (checkOperator(result, j) == "\\vee")
+        {
+            return 4;
         }
         else if (checkOperator(result, j) == "\\wedge")
         {
@@ -57,6 +64,11 @@ const char* ValidateStringParser::checkOperator(const char* result, int j) {
         return "\\neg";
 
     }
+    else if (VerifyVee(result, j)) {
+        nameOperator = "\\vee";
+        return "\\vee";
+
+    }
     else if (VerifyWedge(result, j)) {
         nameOperator = "\\wedge";
         return "\\wedge";
@@ -78,6 +90,11 @@ const char* ValidateStringParser::checkOperator(const char* result, int j) {
 // Função para verificar a sintaxe do latex
 bool ValidateStringParser::VerifyNeg(const char* result, int j) {
     return result[j + 1] == 'n' && result[j + 2] == 'e' && result[j + 3] == 'g';
+}
+
+// Função para verificar a sintaxe do latex
+bool ValidateStringParser::VerifyVee(const char* result, int j) {
+    return result[j + 1] == 'v' && result[j + 2] == 'e' && result[j + 3] == 'e';
 }
 
 // Função para verificar a sintaxe do latex

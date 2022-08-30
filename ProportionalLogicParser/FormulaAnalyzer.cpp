@@ -17,42 +17,75 @@ void FormulaAnalyzer::CreateFormula(char* result, char* Formula)
 {
 	int conter = 0;
 	for (int j = 0; j < (lengthOfArray(result)); j++) {
-		if (TransformLeavesInGrammar(result, j) != 0)
+		char tempLeaveValue = TransformLeavesInGrammar(result, j);
+		int latexValue = ValidateStringParser::VerifyLatex(result, j);
+
+		if (tempLeaveValue != 0)
 		{
-			Formula[conter] = TransformLeavesInGrammar(result, j);
-			conter++;
+			if (latexValue == 3 || latexValue == 4 || latexValue == 5 || latexValue == 10 || latexValue == 14)
+			{
+				Formula[conter] = tempLeaveValue;
+				conter++;
+				if (latexValue == 4)
+				{
+					j = j + latexValue - 1;
+				}
+				else {
+					j = j + latexValue;
+				}
+			}
+			else 
+			{
+				Formula[conter] = tempLeaveValue;
+				conter++;
+			}
+			
 		}
 	}
 }
+
+/*
+			Gabarito das Letras:
+			_____________________________
+			|    A = Abre parênteses    |
+			|    F = Fecha parênteses   |
+			|    E = Espaço             |
+			|    P = Preposição         |
+			|    C = Constante          |
+			|    U = Unário             |
+			|    B = Binário            |
+			|    R = Resultado          |
+			_____________________________
+*/
 
 char FormulaAnalyzer::TransformLeavesInGrammar(const char* result, int j)
 {
 	char Formula;
 	Formula = 0;
+
 	if (ValidateStringParser::VerifyConstant(result, j)) {
-		Formula = 'C';
+		return Formula = 'C';
 	}
 	else if (ValidateStringParser::VerifyOpenParentheses(result, j)) {
-		Formula = 'A';
+		return Formula = 'A';
 	}
 	else if (ValidateStringParser::VerifyCloseParentheses(result, j)) {
-		Formula = 'F';
-	}
-	else if (ValidateStringParser::VerifyProposition(result, j)) {
-		Formula = 'P';
+		return Formula = 'F';
 	}
 	else if (ValidateStringParser::VerifySpace(result, j)) {
-		Formula = 'E';
+		return Formula = 'E';
 	}
-	else if (ValidateStringParser::VerifyLatex(result, j) == 3 || ValidateStringParser::VerifyLatex(result, j) == 5 || ValidateStringParser::VerifyLatex(result, j) == 10 || ValidateStringParser::VerifyLatex(result, j) == 14) {
+	else if (ValidateStringParser::VerifyLatex(result, j) == 3 || ValidateStringParser::VerifyLatex(result, j) == 5 || ValidateStringParser::VerifyLatex(result, j) == 10 || ValidateStringParser::VerifyLatex(result, j) == 14 || ValidateStringParser::VerifyLatex(result, j) == 4) {
 
 		if (ValidateStringParser::VerifyLatex(result, j) != 3) {
-			Formula = 'B';
+			return Formula = 'B';
 		}
 		else {
-			Formula = 'U';
+			return Formula = 'U';
 		}
-		j = j + ValidateStringParser::VerifyLatex(result, j) + 1;
+	}
+	else if (ValidateStringParser::VerifyProposition(result, j)) {
+		return Formula = 'P';
 	}
 
 	return Formula;
@@ -84,19 +117,7 @@ void FormulaAnalyzer::AnalyzeExpressionSyntax(char* Formula, int sizeFormula, bo
 
 	}
 }
-/*
-			Gabarito das Letras:
-			_____________________________
-			|    A = Abre parênteses    |
-			|    F = Fecha parênteses   |
-			|    E = Espaço             |
-			|    P = Preposição         |
-			|    C = Constante          |
-			|    U = Unário             |
-			|    B = Binário            |
-			|    R = Resultado          |
-			_____________________________
-*/
+
 void FormulaAnalyzer::RemovePrepositionByFormula(char* Formula, int sizeFormula)
 {
 	for (int k = 0; k < sizeFormula; k++) {
@@ -104,10 +125,13 @@ void FormulaAnalyzer::RemovePrepositionByFormula(char* Formula, int sizeFormula)
 			Formula[k] = 'R';
 		}
 	}
+
+	OrganizeFormula(Formula, sizeFormula);
 }
 
 void FormulaAnalyzer::RemoveUnaryFormulaByFormula(char* Formula, int sizeFormula)
 {
+	sizeFormula = 20;
 	for (int o = 0; o < sizeFormula; o++) {
 		if (Formula[o] == 'A' && Formula[o + 1] == 'U' && Formula[o + 2] == 'E' && Formula[o + 3] == 'R' && Formula[o + 4] == 'E' && Formula[o + 5] == 'F') {
 			Formula[o] = 'R';
@@ -120,7 +144,7 @@ void FormulaAnalyzer::RemoveUnaryFormulaByFormula(char* Formula, int sizeFormula
 		}
 	}
 	// Organiza o array
-	OrganizeFormula(Formula, sizeof(Formula));
+	OrganizeFormula(Formula, sizeFormula);
 }
 
 void FormulaAnalyzer::RemoveBinaryFormulaByFormula(char* Formula, int sizeFormula)
@@ -140,12 +164,11 @@ void FormulaAnalyzer::RemoveBinaryFormulaByFormula(char* Formula, int sizeFormul
 		}
 	}
 	// Organiza o array
-	OrganizeFormula(Formula, sizeof(Formula));
+	OrganizeFormula(Formula, sizeFormula);
 }
 
 void FormulaAnalyzer::OrganizeFormula(char* Formula, int sizeFormula)
 {
-	sizeFormula = 20;
 	char tempFormula[100] = {};
 	int conter;
 	conter = 0;

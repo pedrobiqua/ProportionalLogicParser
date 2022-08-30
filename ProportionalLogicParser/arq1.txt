@@ -1,2 +1,3 @@
-(\wedge (\wedge a (\neg b ) ) c )
+(\vee (\wedge pedro (\neg thiago ) ) lukas )
 (\wedge a b )
+(\neg 13 )

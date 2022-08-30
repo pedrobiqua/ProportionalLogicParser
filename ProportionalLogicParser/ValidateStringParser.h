@@ -12,6 +12,7 @@ public:
 private:
 	static const char* checkOperator(const char* result, int j);
 	static bool VerifyNeg(const char* result, int j);
+	static bool VerifyVee(const char* result, int j);
 	static bool VerifyWedge(const char* result, int j);
 	static bool VerifyRightArrow(const char* result, int j);
 	static bool VerifyLeftRightArrow(const char* result, int j);
