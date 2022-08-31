@@ -4,7 +4,7 @@
 #include "FormulaAnalyzer.h"
 #include "ValidateStringParser.h"
 
-void FormulaAnalyzer:: RunsProportionalLogicParser(char* result, char* Formula, int sizeFormula)
+void FormulaAnalyzer::RunsProportionalLogicParser(char* result, char* Formula, int sizeFormula)
 {
 	bool flag = false;
 	if (result) {
@@ -36,12 +36,12 @@ void FormulaAnalyzer::CreateFormula(char* result, char* Formula)
 					j = j + latexValue;
 				}
 			}
-			else 
+			else
 			{
 				Formula[conter] = tempLeaveValue;
 				conter++;
 			}
-			
+
 		}
 	}
 }
@@ -65,6 +65,8 @@ char FormulaAnalyzer::TransformLeavesInGrammar(const char* result, int j)
 	char Formula;
 	Formula = 0;
 
+	int verifyLatex = ValidateStringParser::VerifyLatex(result, j);
+
 	if (ValidateStringParser::VerifyConstant(result, j)) {
 		return Formula = 'C';
 	}
@@ -77,9 +79,9 @@ char FormulaAnalyzer::TransformLeavesInGrammar(const char* result, int j)
 	else if (ValidateStringParser::VerifySpace(result, j)) {
 		return Formula = 'E';
 	}
-	else if (ValidateStringParser::VerifyLatex(result, j) == 3 || ValidateStringParser::VerifyLatex(result, j) == 5 || ValidateStringParser::VerifyLatex(result, j) == 10 || ValidateStringParser::VerifyLatex(result, j) == 14 || ValidateStringParser::VerifyLatex(result, j) == 4) {
+	else if (verifyLatex == 3 || verifyLatex == 5 || verifyLatex == 10 || verifyLatex == 14 || verifyLatex == 4) {
 
-		if (ValidateStringParser::VerifyLatex(result, j) != 3) {
+		if (verifyLatex != 3) {
 			return Formula = 'B';
 		}
 		else {
@@ -211,12 +213,12 @@ bool FormulaAnalyzer::isResult(const char* Formula, int sizeFormula)
 {
 	for (int i = 0; i < sizeFormula; i++)
 	{
-		
+
 		if (isBinaryFormula(Formula, i) || isUnaryFormula(Formula, i))
 		{
 			return true;
 		}
-		
+
 	}
 
 	return false;

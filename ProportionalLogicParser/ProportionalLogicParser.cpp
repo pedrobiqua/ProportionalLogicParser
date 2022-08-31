@@ -1,8 +1,9 @@
 // Pedro Bianchini de Quadros
 // Enunciado: Ctrl C + V
 
+//OBS: Professor critique o meu código, para eu poder evoluir no c++, independente da nota!
+
 #include <iostream>
-#include "ValidateStringParser.h"
 #include "FormulaAnalyzer.h"
 
 //Funções usadas
@@ -18,8 +19,10 @@ int main() {
 	int contador = 0;
 	//Será nessa variavel que será manipulado a formula
 
-	std::cout << "Quantos arquivos tem no projeto ? ";
-	std::cin >> numeroArquivos;
+	numeroArquivos = 3;
+	//Se quiser usar o input da tela somente descomente as linhas 24 e 25
+	//std::cout << "Quantos arquivos tem no projeto ? ";
+	//std::cin >> numeroArquivos;
 	
 	while (contador < numeroArquivos)
 	{

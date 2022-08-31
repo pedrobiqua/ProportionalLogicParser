@@ -1,1 +1,3 @@
+2
 (\vee (\vee (\wedge pedro (\neg thiago ) ) las ) (\vee (\wedge pe (\neg th ) ) lu ) )
+(\rightarrow (\neg a ) b )
