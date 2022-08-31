@@ -13,7 +13,7 @@ int main() {
 	// Usando para ler o arquivo.
 	FILE* arq;
 	char Linha[100];
-	char* result;
+	char* result{};
 	char listaDeArquivos[][100] = {"arq1.txt", "arq2.txt", "arq3.txt"};
 	int numeroArquivos;
 	int contador = 0;
@@ -34,12 +34,19 @@ int main() {
 			std::cout << "Problemas na abertura do arquivo" << '\n';
 			return 0;
 		}
+		
+		//Tive q colocar essa variavel pois não deu tempo de criar a implementação de ler um certo número de linhas do arquivo
+		bool ignoreNumber = false;
 
 		while (!feof(arq))
 		{
-			char Formula[100] = {};
 			result = fgets(Linha, 100, arq);
-			FormulaAnalyzer::RunsProportionalLogicParser(result, Formula, sizeof(Formula));
+			if (ignoreNumber)
+			{
+				char Formula[100] = {};
+				FormulaAnalyzer::RunsProportionalLogicParser(result, Formula, sizeof(Formula));
+			}
+			ignoreNumber = true;
 		}
 		fclose(arq);
 		contador++;
