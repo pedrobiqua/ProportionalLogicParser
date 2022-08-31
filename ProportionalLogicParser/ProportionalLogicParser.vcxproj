@@ -133,6 +133,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="arq1.txt" />
+    <Text Include="arq2.txt" />
+    <Text Include="arq3.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FormulaAnalyzer.h" />

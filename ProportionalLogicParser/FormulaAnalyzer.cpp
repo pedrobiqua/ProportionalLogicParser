@@ -114,7 +114,7 @@ void FormulaAnalyzer::AnalyzeExpressionSyntax(char* Formula, int sizeFormula, bo
 		}
 		else
 		{
-			running = isResult(Formula, sizeof(Formula));
+			running = isResult(Formula, sizeFormula);
 		}
 
 	}
@@ -133,7 +133,6 @@ void FormulaAnalyzer::RemovePrepositionByFormula(char* Formula, int sizeFormula)
 
 void FormulaAnalyzer::RemoveUnaryFormulaByFormula(char* Formula, int sizeFormula)
 {
-	sizeFormula = 20;
 	for (int o = 0; o < sizeFormula; o++) {
 		if (Formula[o] == 'A' && Formula[o + 1] == 'U' && Formula[o + 2] == 'E' && Formula[o + 3] == 'R' && Formula[o + 4] == 'E' && Formula[o + 5] == 'F') {
 			Formula[o] = 'R';
@@ -151,7 +150,7 @@ void FormulaAnalyzer::RemoveUnaryFormulaByFormula(char* Formula, int sizeFormula
 
 void FormulaAnalyzer::RemoveBinaryFormulaByFormula(char* Formula, int sizeFormula)
 {
-	for (int p = 0; p < sizeof(Formula); p++) {
+	for (int p = 0; p < sizeFormula; p++) {
 		if (Formula[p] == 'A' && Formula[p + 1] == 'B' && Formula[p + 2] == 'E' && Formula[p + 3] == 'R' && Formula[p + 4] == 'E'
 			&& Formula[p + 5] == 'R' && Formula[p + 6] == 'E' && Formula[p + 7] == 'F') {
 
@@ -193,7 +192,7 @@ void FormulaAnalyzer::OrganizeFormula(char* Formula, int sizeFormula)
 	}
 
 	//Copia a nova formula;
-	memcpy(Formula, tempFormula, sizeof tempFormula);
+	memcpy(Formula, tempFormula, sizeFormula);
 
 }
 
@@ -210,18 +209,17 @@ bool FormulaAnalyzer::isBinaryFormula(const char* Formula, int p)
 
 bool FormulaAnalyzer::isResult(const char* Formula, int sizeFormula)
 {
-	for (int i = 0; i < sizeof(Formula); i++)
+	for (int i = 0; i < sizeFormula; i++)
 	{
-		if (Formula[i] == 'A')
+		
+		if (isBinaryFormula(Formula, i) || isUnaryFormula(Formula, i))
 		{
-			if (!isBinaryFormula(Formula, i) && !isUnaryFormula(Formula, i))
-			{
-				return false;
-			}
+			return true;
 		}
+		
 	}
 
-	return true;
+	return false;
 }
 
 bool FormulaAnalyzer::CheckIfItIsFormula(char* Formula, int sizeFormula)
