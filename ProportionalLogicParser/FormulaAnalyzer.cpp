@@ -11,7 +11,7 @@ void FormulaAnalyzer::RunsProportionalLogicParser(char* result, char* Formula, i
 		CreateFormula(result, Formula);
 		AnalyzeExpressionSyntax(Formula, sizeFormula, &flag);
 	}
-	printStringWithoutBreak(result);
+	//printStringWithoutBreak(result);
 	PrintResultFormula(flag);
 }
 
